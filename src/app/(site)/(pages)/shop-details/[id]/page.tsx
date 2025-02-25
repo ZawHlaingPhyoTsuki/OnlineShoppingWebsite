@@ -1,6 +1,7 @@
 import React from "react";
 import ShopDetails from "@/components/ShopDetails";
 import { Metadata } from "next";
+import { productApi } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "Shop Details Page | NextCommerce Nextjs E-commerce template",
@@ -8,10 +9,14 @@ export const metadata: Metadata = {
   // other metadata
 };
 
-const ShopDetailsPage = () => {
+const ShopDetailsPage = async ({ params }: { params: { id: string } }) => {
+  const id = params.id;
+  const res = await productApi.getById(id)
+  console.log(res)
+
   return (
     <main>
-      <ShopDetails />
+      {/* <ShopDetails productt={product} /> */}
     </main>
   );
 };

@@ -58,7 +58,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
             </button>
 
             <Link
-              href="/product-details"
+              href="/"
               className="inline-flex font-medium text-custom-sm py-[7px] px-5 rounded-[5px] bg-blue text-white ease-out duration-200 hover:bg-blue-dark"
             >
               See Details

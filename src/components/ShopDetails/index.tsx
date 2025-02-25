@@ -3,13 +3,11 @@ import React, {  useState } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
 import Image from "next/image";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
-import { useAppSelector } from "@/redux/store";
 import { Button } from "../ui/button";
 
-const ShopDetails = () => {
+const ShopDetails = ({ productt } ) => {
   const { openPreviewModal } = usePreviewSlider();
   const [previewImg, setPreviewImg] = useState(0);
-
 
   const sizes = [
     {
@@ -194,8 +192,6 @@ const ShopDetails = () => {
                       </svg>
                       Free delivery available
                     </li>
-
-                    
                   </ul>
 
                   <form onSubmit={(e) => e.preventDefault()}>

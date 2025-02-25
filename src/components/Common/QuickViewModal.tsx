@@ -5,13 +5,9 @@ import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { useDispatch } from "react-redux";
 import Image from "next/image";
-import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
-import { resetQuickView } from "@/redux/features/quickView-slice";
-import { updateproductDetails } from "@/redux/features/product-details";
 
 const QuickViewModal = () => {
   const { isModalOpen, closeModal } = useModalContext();
-  const { openPreviewModal } = usePreviewSlider();
   const [quantity, setQuantity] = useState(1);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -20,13 +16,6 @@ const QuickViewModal = () => {
   const product = useAppSelector((state) => state.quickViewReducer.value);
 
   const [activePreview, setActivePreview] = useState(0);
-
-  // preview modal
-  const handlePreviewSlider = () => {
-    dispatch(updateproductDetails(product));
-
-    openPreviewModal();
-  };
 
   useEffect(() => {
     // closing modal while clicking outside
