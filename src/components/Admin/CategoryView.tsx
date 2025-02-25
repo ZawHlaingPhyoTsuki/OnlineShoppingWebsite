@@ -19,13 +19,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import PreLoader from "../Common/PreLoader";
+import Swal from "sweetalert2";
 
 const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
 
 const CategoryView = () => {
   const { data, error, isLoading, mutate } = useSWR("/categories", fetcher);
   const categories = data as CategoryType[];
-  console.log(categories);
 
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState<"stock-low" | "stock-high" | "default">(
@@ -94,6 +94,7 @@ const CategoryList = ({ categories, viewMode, mutate }: CategoryListProps) => {
   const [editDescription, setEditDescription] = useState<string | undefined>(
     ""
   );
+  const [isDeleteLoadingBtn, setIsDeleteLoadingBtn] = useState<boolean>(false);
 
   const handleEditStart = (category: CategoryType) => {
     setEditingId(category.id);
@@ -117,11 +118,23 @@ const CategoryList = ({ categories, viewMode, mutate }: CategoryListProps) => {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this category?")) {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone. This will permanently delete the product and its images.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
       try {
+        setIsDeleteLoadingBtn(true);
         await categoryApi.delete(id);
         toast.success("Category deleted successfully");
         mutate();
+        setIsDeleteLoadingBtn(false);
       } catch (error) {
         toast.error("Failed to delete category");
       }
@@ -214,11 +227,12 @@ const CategoryList = ({ categories, viewMode, mutate }: CategoryListProps) => {
                     <Pencil className="w-5 h-5" />
                   </Button>
                   <Button
+                    disabled={isDeleteLoadingBtn}
                     size="sm"
                     variant="destructive"
                     onClick={() => handleDelete(category.id)}
                   >
-                    <Trash2 className="w-5 h-5" />
+                      <Trash2 className="w-5 h-5" />
                   </Button>
                 </>
               )}

@@ -1,5 +1,9 @@
-export type Category = {
-  title: string;
-  id: number;
-  img: string;
-};
+import { Product } from "./product";
+
+export interface Category {
+  id: string;
+  name: string;
+  description?: string | null;
+  image: string;
+  products?: Product[];
+}

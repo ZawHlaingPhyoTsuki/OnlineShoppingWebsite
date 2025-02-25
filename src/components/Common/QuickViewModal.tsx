@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-
 import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { useDispatch } from "react-redux";
@@ -9,18 +8,20 @@ import Image from "next/image";
 const QuickViewModal = () => {
   const { isModalOpen, closeModal } = useModalContext();
   const [quantity, setQuantity] = useState(1);
+  const [activePreview, setActivePreview] = useState(0);
 
   const dispatch = useDispatch<AppDispatch>();
 
-  // get the product data
+  // Get the product data from Redux
   const product = useAppSelector((state) => state.quickViewReducer.value);
 
-  const [activePreview, setActivePreview] = useState(0);
-
   useEffect(() => {
-    // closing modal while clicking outside
-    function handleClickOutside(event) {
-      if (!event.target.closest(".modal-content")) {
+    // Close modal when clicking outside
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        !event.target ||
+        !(event.target as Element).closest(".modal-content")
+      ) {
         closeModal();
       }
     }
@@ -31,22 +32,21 @@ const QuickViewModal = () => {
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-
       setQuantity(1);
+      setActivePreview(0); // Reset active preview on close
     };
   }, [isModalOpen, closeModal]);
 
+  // Return null if no product or modal is closed to avoid rendering issues
+  if (!isModalOpen || !product) return null;
+
   return (
-    <div
-      className={`${
-        isModalOpen ? "z-99999" : "hidden"
-      } fixed top-0 left-0 overflow-y-auto no-scrollbar w-full h-screen sm:py-20 xl:py-25 2xl:py-[230px] bg-dark/70 sm:px-8 px-4 py-5`}
-    >
-      <div className="flex items-center justify-center ">
+    <div className="fixed top-0 left-0 overflow-y-auto no-scrollbar w-full h-screen sm:py-20 xl:py-25 2xl:py-[230px] bg-dark/70 sm:px-8 px-4 py-5 z-99999">
+      <div className="flex items-center justify-center min-h-full">
         <div className="w-full max-w-[1100px] rounded-xl shadow-3 bg-white p-7.5 relative modal-content">
           <button
             onClick={() => closeModal()}
-            aria-label="button for close modal"
+            aria-label="Close modal"
             className="absolute top-0 right-0 sm:top-6 sm:right-6 flex items-center justify-center w-10 h-10 rounded-full ease-in duration-150 bg-meta text-body hover:text-dark"
           >
             <svg
@@ -72,7 +72,7 @@ const QuickViewModal = () => {
               <div className="flex gap-5">
                 {/* SIDEBAR IMGS */}
                 <div className="flex flex-col gap-5">
-                  {product.imgs.thumbnails?.map((img, key) => (
+                  {product.images?.map((img, key) => (
                     <button
                       onClick={() => setActivePreview(key)}
                       key={key}
@@ -81,8 +81,8 @@ const QuickViewModal = () => {
                       }`}
                     >
                       <Image
-                        src={img || ""}
-                        alt="thumbnail"
+                        src={img}
+                        alt={`${product.name} thumbnail ${key + 1}`}
                         width={61}
                         height={61}
                         className="aspect-square"
@@ -90,29 +90,29 @@ const QuickViewModal = () => {
                     </button>
                   ))}
                 </div>
-                
+
                 {/* MAIN IMAGE */}
                 <div className="relative z-1 overflow-hidden flex items-center justify-center w-full sm:min-h-[508px] bg-gray-1 rounded-lg border border-gray-3">
-                  <div>
-                    <Image
-                      src={product?.imgs?.previews?.[activePreview]}
-                      alt="products-details"
-                      width={400}
-                      height={400}
-                    />
-                  </div>
+                  <Image
+                    src={
+                      product.images?.[activePreview] || "/fallback-image.png"
+                    }
+                    alt={`${product.name} preview`}
+                    width={400}
+                    height={400}
+                  />
                 </div>
               </div>
             </div>
 
-            <div className="md:max-w-[445px]  w-full">
+            <div className="md:max-w-[445px] w-full">
               <span className="inline-block text-custom-xs font-medium text-white py-1 px-3 bg-green mb-6.5">
                 SALE 20% OFF
               </span>
 
               <div className="flex justify-between items-center">
                 <h3 className="font-semibold text-xl xl:text-heading-5 text-dark mb-4">
-                  {product.title}
+                  {product.name} {/* Use name instead of title */}
                 </h3>
                 <div className="flex flex-wrap items-center gap-5 mb-6">
                   <div className="flex items-center gap-2">
@@ -139,23 +139,18 @@ const QuickViewModal = () => {
                         </clipPath>
                       </defs>
                     </svg>
-
-                    <span className="font-medium text-dark"> In Stock </span>
+                    <span className="font-medium text-dark">In Stock</span>
                   </div>
                 </div>
               </div>
 
-              <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has.
-              </p>
+              <p>{product.description || "No description available"}</p>
 
               <div className="flex flex-wrap justify-between gap-5 mt-6 mb-7.5">
                 <div>
                   <h4 className="font-semibold text-lg text-dark mb-3.5">
                     Price
                   </h4>
-
                   <span className="flex items-center gap-2">
                     <span className="font-semibold text-dark text-xl xl:text-heading-4">
                       ${product.discountedPrice}
@@ -166,10 +161,7 @@ const QuickViewModal = () => {
                   </span>
                 </div>
                 <div className="flex flex-wrap items-center gap-4 mt-7">
-                  <button
-                    className={`inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark
-                  `}
-                  >
+                  <button className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark">
                     See Details
                   </button>
                 </div>

@@ -1,11 +1,14 @@
+import { Category } from "./category";
+
 export type Product = {
-  title: string;
-  reviews: number;
+  id: string;
+  name: string;
+  description: string;
   price: number;
   discountedPrice: number;
-  id: number;
-  imgs?: {
-    thumbnails: string[];
-    previews: string[];
-  };
+  categoryId?: string | null;
+  category?: Category | null;
+  images: string[];
+  color: string[];
+  size: string[];
 };

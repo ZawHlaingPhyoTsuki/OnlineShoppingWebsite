@@ -1,140 +1,109 @@
 import { Product } from "@/types/product";
+
 const shopData: Product[] = [
   {
-    title: "Havit HV-G69 USB Gamepad",
-    reviews: 15,
+    name: "Havit HV-G69 USB Gamepad",
+    description: "Hello",
     price: 59.0,
     discountedPrice: 29.0,
-    id: 1,
-    imgs: {
-      thumbnails: [
-        "/images/products/product-1-sm-1.png",
-        "/images/products/product-1-sm-2.png",
-      ],
-      previews: [
-        "/images/products/product-1-bg-1.png",
-        "/images/products/product-1-bg-2.png",
-      ],
-    },
+    id: "1",
+    images: [
+      "/images/products/product-1-bg-1.png",
+      "/images/products/product-1-bg-2.png",
+    ],
+    color: ["red"],
+    size: ["SM", "M"],
   },
   {
-    title: "iPhone 14 Plus , 6/128GB",
-    reviews: 5,
+    name: "iPhone 14 Plus , 6/128GB",
+    description: "A powerful smartphone with A15 Bionic chip",
     price: 899.0,
     discountedPrice: 99.0,
-    id: 2,
-    imgs: {
-      thumbnails: [
-        "/images/products/product-2-sm-1.png",
-        "/images/products/product-2-sm-2.png",
-      ],
-      previews: [
-        "/images/products/product-2-bg-1.png",
-        "/images/products/product-2-bg-2.png",
-      ],
-    },
+    id: "2",
+    images: [
+      "/images/products/product-2-bg-1.png",
+      "/images/products/product-2-bg-2.png",
+    ],
+    color: ["black"],
+    size: ["One Size"],
   },
   {
-    title: "Apple iMac M1 24-inch 2021",
-    reviews: 5,
+    name: "Apple iMac M1 24-inch 2021",
+    description: "Stunning all-in-one desktop with M1 chip",
     price: 59.0,
     discountedPrice: 29.0,
-    id: 3,
-    imgs: {
-      thumbnails: [
-        "/images/products/product-3-sm-1.png",
-        "/images/products/product-3-sm-2.png",
-      ],
-      previews: [
-        "/images/products/product-3-bg-1.png",
-        "/images/products/product-3-bg-2.png",
-      ],
-    },
+    id: "3",
+    images: [
+      "/images/products/product-3-bg-1.png",
+      "/images/products/product-3-bg-2.png",
+    ],
+    color: ["silver"],
+    size: ["One Size"],
   },
   {
-    title: "MacBook Air M1 chip, 8/256GB",
-    reviews: 6,
+    name: "MacBook Air M1 chip, 8/256GB",
+    description: "Lightweight laptop with exceptional performance",
     price: 59.0,
     discountedPrice: 29.0,
-    id: 4,
-    imgs: {
-      thumbnails: [
-        "/images/products/product-4-sm-1.png",
-        "/images/products/product-4-sm-2.png",
-      ],
-      previews: [
-        "/images/products/product-4-bg-1.png",
-        "/images/products/product-4-bg-2.png",
-      ],
-    },
+    id: "4",
+    images: [
+      "/images/products/product-4-bg-1.png",
+      "/images/products/product-4-bg-2.png",
+    ],
+    color: ["space gray"],
+    size: ["One Size"],
   },
   {
-    title: "Apple Watch Ultra",
-    reviews: 3,
+    name: "Apple Watch Ultra",
+    description: "Rugged smartwatch for extreme conditions",
     price: 99.0,
     discountedPrice: 29.0,
-    id: 5,
-    imgs: {
-      thumbnails: [
-        "/images/products/product-5-sm-1.png",
-        "/images/products/product-5-sm-2.png",
-      ],
-      previews: [
-        "/images/products/product-5-bg-1.png",
-        "/images/products/product-5-bg-2.png",
-      ],
-    },
+    id: "5",
+    images: [
+      "/images/products/product-5-bg-1.png",
+      "/images/products/product-5-bg-2.png",
+    ],
+    color: ["titanium"],
+    size: ["One Size"],
   },
   {
-    title: "Logitech MX Master 3 Mouse",
-    reviews: 15,
+    name: "Logitech MX Master 3 Mouse",
+    description: "Premium mouse for productivity",
     price: 59.0,
     discountedPrice: 29.0,
-    id: 6,
-    imgs: {
-      thumbnails: [
-        "/images/products/product-6-sm-1.png",
-        "/images/products/product-6-sm-2.png",
-      ],
-      previews: [
-        "/images/products/product-6-bg-1.png",
-        "/images/products/product-6-bg-2.png",
-      ],
-    },
+    id: "6",
+    images: [
+      "/images/products/product-6-bg-1.png",
+      "/images/products/product-6-bg-2.png",
+    ],
+    color: ["black"],
+    size: ["One Size"],
   },
   {
-    title: "Apple iPad Air 5th Gen - 64GB",
-    reviews: 15,
+    name: "Apple iPad Air 5th Gen - 64GB",
+    description: "Versatile tablet with M1 chip",
     price: 59.0,
     discountedPrice: 29.0,
-    id: 7,
-    imgs: {
-      thumbnails: [
-        "/images/products/product-7-sm-1.png",
-        "/images/products/product-7-sm-2.png",
-      ],
-      previews: [
-        "/images/products/product-7-bg-1.png",
-        "/images/products/product-7-bg-2.png",
-      ],
-    },
+    id: "7",
+    images: [
+      "/images/products/product-7-bg-1.png",
+      "/images/products/product-7-bg-2.png",
+    ],
+    color: ["starlight"],
+    size: ["One Size"],
   },
   {
-    title: "Asus RT Dual Band Router",
-    reviews: 15,
+    name: "Asus RT Dual Band Router",
+    description: "High-speed dual-band Wi-Fi router",
     price: 59.0,
     discountedPrice: 29.0,
-    id: 8,
-    imgs: {
-      thumbnails: [
-        "/images/products/product-8-sm-1.png",
-        "/images/products/product-8-sm-2.png",
-      ],
-      previews: [
-        "/images/products/product-8-bg-1.png",
-        "/images/products/product-8-bg-2.png",
-      ],
-    },
+    id: "8",
+    images: [
+      "/images/products/product-8-bg-1.png",
+      "/images/products/product-8-bg-2.png",
+    ],
+    color: ["black"],
+    size: ["One Size"],
   },
 ];
 

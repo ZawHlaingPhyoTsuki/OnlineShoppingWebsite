@@ -17,17 +17,19 @@ model Category {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
   name        String    @unique
   description String?
+  image       String
   products    Product[] // A category can have many products
 }
 
 model Product {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  description String
-  price       Float
-  categoryId  String?  @db.ObjectId // Foreign key to the category
-  category    Category? @relation(fields: [categoryId], references: [id]) // Belongs to one category
-  images      String[]
-  color       String[]
-  size        String[]
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String
+  price           Float
+  discountedPrice Float
+  categoryId      String?   @db.ObjectId // Foreign key to the category
+  category        Category? @relation(fields: [categoryId], references: [id]) // Belongs to one category
+  images          String[]
+  color           String[]
+  size            String[]
 }
