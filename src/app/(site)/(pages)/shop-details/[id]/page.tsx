@@ -10,13 +10,27 @@ export const metadata: Metadata = {
 };
 
 const ShopDetailsPage = async ({ params }: { params: { id: string } }) => {
-  const id = params.id;
-  const res = await productApi.getById(id)
-  console.log(res)
+  // const id = params.id;
+  // const res = await productApi.getById(id)
+  // console.log(res)
+
+  const product = {
+    name: "Havit HV-G69 USB Gamepad",
+    description: "Hello",
+    price: 59.0,
+    discountedPrice: 29.0,
+    id: "1",
+    images: [
+      "/images/products/product-1-bg-1.png",
+      "/images/products/product-1-bg-2.png",
+    ],
+    color: ["red"],
+    size: ["SM", "M"],
+  };
 
   return (
     <main>
-      {/* <ShopDetails productt={product} /> */}
+      <ShopDetails product={product} />
     </main>
   );
 };

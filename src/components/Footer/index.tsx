@@ -12,14 +12,14 @@ const Footer = () => {
         <div className="flex mx-auto flex-wrap sm:flex-nowrap gap-20 justify-center sm:justify-between pt-17.5 xl:pt-22.5 pb-10 xl:pb-15">
           {/* LEFT SIDE */}
           <div className="max-w-[330px] w-full">
-            <Link className="flex-shrink-0 " href="/">
+            <a className="flex-shrink-0 " href="#">
               <Image
                 src="/images/logo/logo.svg"
                 alt="Logo"
                 width={219}
                 height={36}
               />
-            </Link>
+            </a>
 
             <ul className="flex flex-col gap-6 pt-10">
               <li className="flex gap-4.5">
