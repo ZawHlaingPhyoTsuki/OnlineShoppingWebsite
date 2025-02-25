@@ -11,28 +11,72 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Pencil, Trash2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import PreLoader from "../Common/PreLoader";
 
 const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
 
 const CategoryView = () => {
-  const { data, error, isLoading, mutate } = useSWR("/categories", fetcher); // Added mutate for refreshing data
+  const { data, error, isLoading, mutate } = useSWR("/categories", fetcher);
   const categories = data as CategoryType[];
   console.log(categories);
 
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = useState<"stock-low" | "stock-high" | "default">(
+    "default"
+  );
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <PreLoader />;
   if (error) return <p>Error: {error.message || "An error occurred"}</p>;
+
+  // Sort categories based on stock (products.length)
+  const sortedCategories = [...(categories || [])].sort((a, b) => {
+    const aStock = a.products?.length || 0;
+    const bStock = b.products?.length || 0;
+
+    if (sortBy === "default") return 0; // No sorting for default
+
+    if (sortBy === "stock-low") {
+      return aStock - bStock; // Ascending order (low to high stock)
+    }
+
+    if (sortBy === "stock-high") {
+      return bStock - aStock; // Descending order (high to low stock)
+    }
+
+    return 0;
+  });
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex justify-end items-center mb-4">
+      <div className="flex justify-between items-center mb-4">
+        <Select
+          value={sortBy}
+          onValueChange={(value) =>
+            setSortBy(value as "stock-low" | "stock-high" | "default")
+          }
+        >
+          <SelectTrigger className="w-[180px] bg-muted/50">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="default">Default</SelectItem>
+            <SelectItem value="stock-low">Stock: Low to High</SelectItem>
+            <SelectItem value="stock-high">Stock: High to Low</SelectItem>
+          </SelectContent>
+        </Select>
         <ViewModeBtn viewMode={viewMode} setViewMode={setViewMode} />
       </div>
       <CategoryList
-        categories={categories}
+        categories={sortedCategories}
         viewMode={viewMode}
-        mutate={mutate} // Pass mutate to refresh data after edits/deletes
+        mutate={mutate}
       />
     </div>
   );
@@ -41,11 +85,11 @@ const CategoryView = () => {
 type CategoryListProps = {
   categories: CategoryType[];
   viewMode: "grid" | "list";
-  mutate: () => void; // Added for data refresh
+  mutate: () => void;
 };
 
 const CategoryList = ({ categories, viewMode, mutate }: CategoryListProps) => {
-  const [editingId, setEditingId] = useState<string | null>(null); // Track which category is being edited
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState<string>("");
   const [editDescription, setEditDescription] = useState<string | undefined>(
     ""
@@ -65,7 +109,7 @@ const CategoryList = ({ categories, viewMode, mutate }: CategoryListProps) => {
       };
       await categoryApi.update(id, updatedData);
       toast.success("Category updated successfully");
-      setEditingId(null); // Exit edit mode
+      setEditingId(null);
       mutate();
     } catch (error) {
       toast.error("Failed to update category");
@@ -86,7 +130,7 @@ const CategoryList = ({ categories, viewMode, mutate }: CategoryListProps) => {
 
   return (
     <div
-      className={`grid gap-4 ${
+      className={`grid gap-5 ${
         viewMode === "grid"
           ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
           : "flex flex-col"
@@ -124,7 +168,7 @@ const CategoryList = ({ categories, viewMode, mutate }: CategoryListProps) => {
             ) : (
               <>
                 <div className="flex justify-between mb-8">
-                  <div>
+                  <div className="flex flex-col gap-3">
                     <h3 className="text-lg font-semibold">{category.name}</h3>
                     <p className="text-sm text-muted-foreground line-clamp-2 max-w-[250px] md:max-w-[180px]">
                       {category.description || "No description available"}
@@ -144,7 +188,7 @@ const CategoryList = ({ categories, viewMode, mutate }: CategoryListProps) => {
             )}
             <div
               className={`mt-2 flex gap-2 ${
-                viewMode == "grid" ? "justify-between" : "justify-end"
+                viewMode === "grid" ? "justify-between" : "justify-end"
               }`}
             >
               {editingId === category.id ? (

@@ -13,14 +13,10 @@ import { Pencil, Trash2 } from "lucide-react";
 type ProductListProps = {
   products: ProductType[];
   viewMode?: "grid" | "list";
-  mutate?: () => void;
+  mutate: () => void;
 };
 
-const ProductList = ({
-  products,
-  viewMode = "grid",
-  mutate,
-}: ProductListProps) => {
+const ProductList = ({ products, viewMode = 'grid', mutate }: ProductListProps) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState<string>("");
   const [editDescription, setEditDescription] = useState<string>("");
@@ -42,8 +38,8 @@ const ProductList = ({
       };
       await productApi.update(id, updatedData);
       toast.success("Product updated successfully");
-      setEditingId(null); // Exit edit mode
-      mutate(); // Refresh the product list
+      setEditingId(null);
+      mutate();
     } catch (error) {
       toast.error("Failed to update product");
     }
@@ -54,7 +50,7 @@ const ProductList = ({
       try {
         await productApi.delete(id);
         toast.success("Product deleted successfully");
-        mutate(); // Refresh the product list
+        mutate();
       } catch (error) {
         toast.error("Failed to delete product");
       }
@@ -145,7 +141,7 @@ const ProductList = ({
             )}
             <div
               className={`mt-2 flex gap-2 ${
-                viewMode == "grid" ? "justify-between" : "justify-end"
+                viewMode === "grid" ? "justify-between" : "justify-end"
               }`}
             >
               {editingId === product.id ? (

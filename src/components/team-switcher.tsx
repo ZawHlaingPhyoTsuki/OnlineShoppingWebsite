@@ -26,7 +26,7 @@ export function TeamSwitcher({
           asChild
         >
           <Link href="/admin">
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg  ">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg pl-1">
               <activeTeam.logo className="size-4" />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
