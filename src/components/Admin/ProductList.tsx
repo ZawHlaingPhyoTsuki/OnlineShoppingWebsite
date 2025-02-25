@@ -9,6 +9,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Pencil, Trash2 } from "lucide-react";
+import Swal from "sweetalert2";
 
 type ProductListProps = {
   products: ProductType[];
@@ -21,6 +22,7 @@ const ProductList = ({ products, viewMode = 'grid', mutate }: ProductListProps) 
   const [editName, setEditName] = useState<string>("");
   const [editDescription, setEditDescription] = useState<string>("");
   const [editPrice, setEditPrice] = useState<number>(0);
+  const [isDeleteLoadingBtn, setIsDeleteLoadingBtn] = useState<boolean>(false)
 
   const handleEditStart = (product: ProductType) => {
     setEditingId(product.id);
@@ -45,17 +47,30 @@ const ProductList = ({ products, viewMode = 'grid', mutate }: ProductListProps) 
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this product?")) {
-      try {
-        await productApi.delete(id);
-        toast.success("Product deleted successfully");
-        mutate();
-      } catch (error) {
-        toast.error("Failed to delete product");
-      }
+const handleDelete = async (id: string) => {
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "This action cannot be undone. This will permanently delete the product and its images.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it!",
+  });
+
+  if (result.isConfirmed) {
+    try {
+      setIsDeleteLoadingBtn(true)
+      await productApi.delete(id);
+      toast.success("Product and associated images deleted successfully");
+      mutate();
+      setIsDeleteLoadingBtn(false);
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      toast.error("Failed to delete product or images");
     }
-  };
+  }
+};
 
   return (
     <div
@@ -167,11 +182,16 @@ const ProductList = ({ products, viewMode = 'grid', mutate }: ProductListProps) 
                     <Pencil className="w-5 h-5" />
                   </Button>
                   <Button
+                    disabled={isDeleteLoadingBtn}
                     size="sm"
                     variant="destructive"
                     onClick={() => handleDelete(product.id)}
                   >
-                    <Trash2 className="w-5 h-5" />
+                    {isDeleteLoadingBtn ? (
+                      "..."
+                    ) : (
+                      <Trash2 className="w-5 h-5" />
+                    )}
                   </Button>
                 </>
               )}

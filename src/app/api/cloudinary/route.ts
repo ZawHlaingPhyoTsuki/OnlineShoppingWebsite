@@ -1,3 +1,5 @@
+//src/app/api/cloudinary/route.ts
+
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
 
