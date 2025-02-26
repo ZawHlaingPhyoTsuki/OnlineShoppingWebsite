@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { useDispatch } from "react-redux";
-import Image from "next/image";
+import { CldImage } from "next-cloudinary";
 
 const QuickViewModal = () => {
   const { isModalOpen, closeModal } = useModalContext();
@@ -80,7 +80,7 @@ const QuickViewModal = () => {
                         activePreview === key && "border-2 border-blue"
                       }`}
                     >
-                      <Image
+                      <CldImage
                         src={img}
                         alt={`${product.name} thumbnail ${key + 1}`}
                         width={61}
@@ -93,7 +93,7 @@ const QuickViewModal = () => {
 
                 {/* MAIN IMAGE */}
                 <div className="relative z-1 overflow-hidden flex items-center justify-center w-full sm:min-h-[508px] bg-gray-1 rounded-lg border border-gray-3">
-                  <Image
+                  <CldImage
                     src={
                       product.images?.[activePreview] || "/fallback-image.png"
                     }

@@ -6,7 +6,7 @@ import { updateQuickView } from "@/redux/features/quickView-slice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import Link from "next/link";
-import Image from "next/image";
+import { CldImage } from "next-cloudinary";
 
 const SingleGridItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
@@ -20,11 +20,12 @@ const SingleGridItem = ({ item }: { item: Product }) => {
   return (
     <div className="group">
       <div className="relative overflow-hidden flex items-center justify-center rounded-lg bg-white shadow-1 min-h-[270px] mb-4">
-        <Image
+        <CldImage
           src={item.images?.[0] || "/fallback-image.png"}
           alt={item.name}
           width={250}
           height={250}
+          className="object-cover h-[300px] w-[250px]"
         />
 
         <div className="absolute left-0 bottom-0 translate-y-full w-full flex items-center justify-center gap-2.5 pb-5 ease-linear duration-200 group-hover:translate-y-0">

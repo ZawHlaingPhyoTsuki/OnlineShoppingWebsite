@@ -1,18 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
-import Image from "next/image";
-import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import { Button } from "../ui/button";
 import { Product } from "@/types/product";
+import { CldImage } from "next-cloudinary";
 
 const ShopDetails = ({ product }: { product: Product }) => {
-  const { openPreviewModal } = usePreviewSlider();
   const [previewImg, setPreviewImg] = useState(0);
 
-  const handlePreviewSlider = () => {
-    openPreviewModal();
-  };
+  const handleZoomImage = () => {};
 
   // Check if product has valid data before rendering
   if (!product || !product.name) {
@@ -35,9 +31,9 @@ const ShopDetails = ({ product }: { product: Product }) => {
           <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-17.5">
             <div className="lg:max-w-[570px] w-full">
               <div className="lg:min-h-[512px] rounded-lg shadow-1 bg-gray-2 p-4 sm:p-7.5 relative flex items-center justify-center">
-                <div>
+                <div className="w-[300px]">
                   <button
-                    onClick={handlePreviewSlider}
+                    onClick={handleZoomImage}
                     aria-label="Zoom image"
                     className="gallery__Image w-11 h-11 rounded-[5px] bg-gray-1 shadow-1 flex items-center justify-center ease-out duration-200 text-dark hover:text-blue absolute top-4 lg:top-6 right-4 lg:right-6 z-50"
                   >
@@ -57,11 +53,13 @@ const ShopDetails = ({ product }: { product: Product }) => {
                       />
                     </svg>
                   </button>
-                  <Image
-                    src={product.images?.[previewImg] || "/fallback-image.png"}
+                  <CldImage
+                    src={product.images[previewImg]}
                     alt={`${product.name} preview`}
-                    width={400}
-                    height={400}
+                    width={500}
+                    height={500 }
+                    className="object-cover rounded-md w-full h-full"
+                    priority={false}
                   />
                 </div>
               </div>
@@ -75,7 +73,7 @@ const ShopDetails = ({ product }: { product: Product }) => {
                       key === previewImg ? "border-blue" : "border-transparent"
                     }`}
                   >
-                    <Image
+                    <CldImage
                       width={50}
                       height={50}
                       src={item}
@@ -127,12 +125,15 @@ const ShopDetails = ({ product }: { product: Product }) => {
               </div>
 
               <h3 className="font-medium text-custom-1 mb-4.5">
-                <span className="">
-                  Price: ${product.discountedPrice} {/* Swapped order */}
-                </span>
-                <span className="text-sm sm:text-base text-dark line-through">
-                  {" "}
-                  ${product.price}
+                <span className="flex gap-5">
+                  <span>Price:</span>
+                  <span>
+                    ${product.discountedPrice}{" "}
+                    <span className="text-sm sm:text-base text-dark line-through">
+                      {" "}
+                      ${product.price}
+                    </span>
+                  </span>
                 </span>
               </h3>
 

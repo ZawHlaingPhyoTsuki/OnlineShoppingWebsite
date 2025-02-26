@@ -6,7 +6,7 @@ import { updateQuickView } from "@/redux/features/quickView-slice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import Link from "next/link";
-import Image from "next/image";
+import { CldImage } from "next-cloudinary";
 
 const SingleListItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
@@ -21,11 +21,12 @@ const SingleListItem = ({ item }: { item: Product }) => {
     <div className="group rounded-lg bg-white shadow-1">
       <div className="flex">
         <div className="shadow-list relative overflow-hidden flex items-center justify-center max-w-[270px] w-full sm:min-h-[270px] p-4">
-          <Image
+          <CldImage
             src={item.images?.[0] || "/fallback-image.png"} // Use images array with fallback
             alt={item.name}
             width={250}
             height={250}
+            className="object-cover w-[230px] h-[210px]"
           />
 
           <div className="absolute left-0 bottom-0 translate-y-full w-full flex items-center justify-center gap-2.5 pb-5 ease-linear duration-200 group-hover:translate-y-0">
