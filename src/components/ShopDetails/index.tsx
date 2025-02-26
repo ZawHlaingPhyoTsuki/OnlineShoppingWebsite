@@ -10,22 +10,9 @@ const ShopDetails = ({ product }: { product: Product }) => {
   const { openPreviewModal } = usePreviewSlider();
   const [previewImg, setPreviewImg] = useState(0);
 
-  const sizes = [
-    { title: "XS" },
-    { title: "S" },
-    { title: "M" },
-    { title: "L" },
-    { title: "XL" },
-    { title: "XXL" },
-  ];
-
-  const colors = ["red", "blue", "orange", "pink", "purple"];
-
   const handlePreviewSlider = () => {
     openPreviewModal();
   };
-
-  console.log(product);
 
   // Check if product has valid data before rendering
   if (!product || !product.name) {

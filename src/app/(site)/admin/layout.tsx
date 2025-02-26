@@ -36,7 +36,7 @@ export default function RootLayout({
                 <AdminBreadcrumb />
               </div>
             </header>
-            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+            <div className="flex flex-1 flex-col gap-4 p-4 pt-0 min-h-[calc(100vh-100px)]">
               {children}
               <Toaster />
             </div>

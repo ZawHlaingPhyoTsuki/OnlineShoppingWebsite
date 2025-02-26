@@ -25,14 +25,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { ProductType } from "@/types/myProduct";
 import { useRouter } from "next/navigation";
+import { Product } from "@/types/product";
 
 // Form schema
 const productSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
   price: z.number().min(0, "Price must be positive"),
+  discountedPrice: z
+    .number()
+    .min(0, "Discounted price must be positive")
+    .optional(),
   categoryId: z.string().min(1, "Category is required"),
   size: z.array(z.string()).min(1, "At least one size is required"),
   color: z.array(z.string()).min(1, "At least one color is required"),
@@ -58,6 +62,7 @@ export default function CreateProduct() {
       name: "",
       description: "",
       price: 0,
+      discountedPrice: 0,
       categoryId: "",
       color: [],
       size: [],
@@ -85,9 +90,7 @@ export default function CreateProduct() {
         throw new Error("Failed to delete image");
       }
       setImages((prev) => prev.filter((_, i) => i !== index));
-      toast.success("Image removed successfully", {
-        className: "bg-green-500 text-white border-none",
-      });
+      toast.success("Image removed successfully");
     } catch (error) {
       console.error("Failed to delete image:", error);
       toast.error("Failed to remove image");
@@ -97,20 +100,19 @@ export default function CreateProduct() {
   const onSubmit = async (data: ProductFormValues) => {
     try {
       setIsLoading(true);
-      const productData: Omit<ProductType, "id" | "category"> = {
+      const productData: Omit<Product, "id" | "category"> = {
         name: data.name,
         description: data.description,
         price: Number(data.price),
+        discountedPrice: Number(data.discountedPrice),
         categoryId: data.categoryId,
-        images: images,
+        images: images ,
         color: data.color,
         size: data.size,
       };
 
       await productApi.create(productData);
-      toast.success("Product created successfully", {
-        className: "bg-green-500 text-white border-none",
-      });
+      toast.success("Product created successfully");
       form.reset();
       setImages([]);
       router.push("/admin/view-all-products")
@@ -178,6 +180,38 @@ export default function CreateProduct() {
                     }}
                     onBlur={() => {
                       // Ensure value is never negative on blur
+                      if (field.value < 0) {
+                        field.onChange(0);
+                      }
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="discountedPrice"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Discounted Price (Optional)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="Enter discounted price"
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const numValue = value === "" ? 0 : parseFloat(value);
+                      if (numValue >= 0 || value === "") {
+                        field.onChange(numValue);
+                      }
+                    }}
+                    onBlur={() => {
                       if (field.value < 0) {
                         field.onChange(0);
                       }
