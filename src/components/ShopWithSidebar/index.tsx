@@ -1,41 +1,20 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
-import SingleGridItem from "../Shop/SingleGridItem";
-import SingleListItem from "../Shop/SingleListItem";
 import { categoryApi, productApi } from "@/lib/api";
 import { toast } from "sonner";
 import { Category } from "@/types/category";
 import useSWR from "swr";
 import {
-  ArrowDown,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Grid,
   List,
-  PanelRightClose,
 } from "lucide-react";
 import FilterBox from "../Common/FilterBox";
-import { Product } from "@/types/product";
-import SkeletonProduct from "../Common/SkeletonProduct";
-import CategoryDropdown from "./CategoryDropdown";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button } from "../ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Label } from "../ui/label";
-import { Checkbox } from "../ui/checkbox";
+import SheetSidebar from "./SheetSidebar";
+import CategoryBox from "./CategoryBox";
+import ProductSection from "./ProductSection";
 
 const fetcher = ([_, params]) =>
   productApi.getAll(params).then((res) => res.data);
@@ -45,8 +24,10 @@ const ShopWithSidebar = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [limit, setLimit] = useState(9);
   const [page, setPage] = useState(1);
+  const [checkedCategory, setCheckedCategory] = useState<string | null>(null);
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("latest");
+
 
   // fetch categories
   useEffect(() => {
@@ -93,6 +74,11 @@ const ShopWithSidebar = () => {
     setSortBy(value);
   };
 
+  // handle category filter, filter by category id
+  const handleCategoryFilter = (id: string) => {
+    setCategoryId(id === categoryId ? null : id);
+  };
+
   const sortOptions = [
     { value: "latest", label: "Latest Products" },
     { value: "price:asc", label: "Price: Low to High" },
@@ -106,21 +92,14 @@ const ShopWithSidebar = () => {
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <div className="flex gap-7.5">
             {/* <!-- Sidebar Start --> */}
-            <div
-              className={` max-w-[310px] xl:max-w-[270px] w-full hidden xl:block`}
-            >
-              <div className="hidden lg:flex flex-col gap-6">
-                {/* <!-- filter box --> */}
-                <div className="bg-white shadow-1 rounded-lg py-4 px-4 flex justify-between items-center">
-                  <span className="tracking-[.07em]">Filters:</span>
-                  <span className="text-blue font-thin text-sm cursor-pointer hover:text-blue-light active:text-blue-dark">
-                    Clear All
-                  </span>
-                </div>
-
-                {/* <!-- category box for desktop --> */}
-                <CategoryBox categories={categories} />
-              </div>
+            <div className="hidden lg:flex flex-col gap-6 max-w-[310px] xl:max-w-[270px] w-full">
+              {/* <!-- category box for desktop --> */}
+              <CategoryBox
+                categories={categories}
+                handleCategoryFilter={handleCategoryFilter}
+                checkedCategory={checkedCategory}
+                setCheckedCategory={setCheckedCategory}
+              />
             </div>
             {/* // <!-- Sidebar End --> */}
 
@@ -131,7 +110,12 @@ const ShopWithSidebar = () => {
                   {/* <!-- top bar left --> */}
                   <div className="flex flex-wrap items-center gap-4">
                     {/* <!-- category box for mobile */}
-                    <SheetSidebar categories={categories} />
+                    <SheetSidebar
+                      categories={categories}
+                      handleCategoryFilter={handleCategoryFilter}
+                      checkedCategory={checkedCategory}
+                      setCheckedCategory={setCheckedCategory}
+                    />
                     <FilterBox
                       value={sortBy}
                       onValueChange={handleFilter}
@@ -140,7 +124,7 @@ const ShopWithSidebar = () => {
                     />
                   </div>
 
-                  {/* <!-- top bar right --> */}
+                  {/* <!-- top bar right GRID LIST BUTTON --> */}
                   <div className="flex items-center gap-2.5">
                     <button
                       onClick={() => setProductStyle("grid")}
@@ -169,14 +153,14 @@ const ShopWithSidebar = () => {
                 </div>
               </div>
 
-              {/* <!-- Products Grid Tab Content Start --> */}
+              {/* <!-- Products Grid LIST Content Start --> */}
               <ProductSection
                 productStyle={productStyle}
                 products={products}
                 isLoading={isLoading}
                 limit={limit}
               />
-              {/* <!-- Products Grid Tab Content End --> */}
+              {/* <!-- Products Grid LIST Content End --> */}
 
               {/* <!-- Products Pagination Start --> */}
               <div className="flex justify-center mt-15">
@@ -282,129 +266,3 @@ const ShopWithSidebar = () => {
 
 export default ShopWithSidebar;
 
-const CategoryBox = ({ categories }: { categories: Category[] }) => {
-  return (
-    <div className="flex items-center gap-2 w-full">
-      <div className="w-full flex flex-col gap-3">
-        <div className="w-full flex justify-between items-center py-2 px-2 bg-white rounded-lg">
-          <Label className="pl-2 text-base">Category</Label>
-        </div>
-        <div>
-          <div className="flex flex-col gap-4 bg-white rounded-lg p-4">
-            {categories.map((item) => (
-              <div className="w-full flex justify-between items-center cursor-pointer">
-                <div className="flex gap-2 items-center">
-                  <Checkbox id={item.name} />
-                  <Label
-                    htmlFor={item.name}
-                    className="cursor-pointer text-start"
-                  >
-                    {item.name}
-                  </Label>
-                </div>
-                <span className="rounded-full bg-meta w-5 h-5 text-center">
-                  {item.products.length}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-type ProductSectionProps = {
-  productStyle: string;
-  products: Product[];
-  isLoading: boolean;
-  limit: number;
-};
-
-const ProductSection = ({
-  productStyle,
-  products,
-  isLoading,
-  limit = 10,
-}: ProductSectionProps) => {
-  if (isLoading)
-    return <SkeletonProduct productStyle={productStyle} limit={limit} />;
-
-  return (
-    <div
-      className={`${
-        productStyle === "grid"
-          ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-7.5 gap-y-9"
-          : "flex flex-col gap-7.5"
-      }`}
-    >
-      {products &&
-        products.length > 0 &&
-        products.map((item, key) =>
-          productStyle === "grid" ? (
-            <SingleGridItem item={item} key={key} />
-          ) : (
-            <SingleListItem item={item} key={key} />
-          )
-        )}
-    </div>
-  );
-};
-
-const SheetSidebar = ({ categories }: { categories: Category[] }) => {
-  return (
-    <div className="xl:hidden">
-      <Sheet>
-        <SheetTrigger>
-          <button
-            className={`bg-blue hover:bg-blue-light active:bg-blue-dark border-blue text-white flex items-center justify-center w-10.5 h-9 rounded-[5px] border ease-out duration-200  hover:text-white`}
-          >
-            <PanelRightClose size={20} />
-          </button>
-        </SheetTrigger>
-        <SheetContent side="left" className="z-99999 xl:hidden bg-meta">
-          <SheetHeader className="my-4">
-            <SheetTitle className="flex justify-between items-center mx-2">
-              <span className="tracking-[.07em]">Filters:</span>
-              <span className="text-blue font-thin text-sm cursor-pointer hover:text-blue-light active:text-blue-dark">
-                Clear All
-              </span>
-            </SheetTitle>
-            <SheetDescription>
-              <div className="flex flex-col gap-6 w-full">
-                <div className="flex items-center gap-2 w-full">
-                  <Collapsible className="w-full flex flex-col gap-3">
-                    <CollapsibleTrigger className="w-full flex justify-between items-center py-2 px-2 bg-white rounded-lg">
-                      <Label className="pl-2 text-base">Category</Label>
-                      <ChevronDown size={20} />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <div className="flex flex-col gap-4 bg-white rounded-lg p-4">
-                        {categories.map((item) => (
-                          <div className="w-full flex justify-between items-center cursor-pointer">
-                            <div className="flex gap-2 items-center">
-                              <Checkbox id={item.name} />
-                              <Label
-                                htmlFor={item.name}
-                                className="cursor-pointer text-start"
-                              >
-                                {item.name}
-                              </Label>
-                            </div>
-                            <span className="rounded-full bg-meta w-5 h-5 text-center">
-                              {item.products.length}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </div>
-              </div>
-            </SheetDescription>
-          </SheetHeader>
-        </SheetContent>
-      </Sheet>
-    </div>
-  );
-};
