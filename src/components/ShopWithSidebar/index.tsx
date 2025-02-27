@@ -15,6 +15,7 @@ import FilterBox from "../Common/FilterBox";
 import SheetSidebar from "./SheetSidebar";
 import CategoryBox from "./CategoryBox";
 import ProductSection from "./ProductSection";
+import PaginationComponent from "./PaginationComponent";
 
 const fetcher = ([_, params]) =>
   productApi.getAll(params).then((res) => res.data);
@@ -23,11 +24,10 @@ const ShopWithSidebar = () => {
   const [productStyle, setProductStyle] = useState("grid");
   const [categories, setCategories] = useState<Category[]>([]);
   const [limit, setLimit] = useState(9);
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [checkedCategory, setCheckedCategory] = useState<string | null>(null);
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("latest");
-
 
   // fetch categories
   useEffect(() => {
@@ -42,7 +42,7 @@ const ShopWithSidebar = () => {
     [
       "/products",
       {
-        page,
+        page: currentPage,
         limit,
         categoryId,
         // sortBy: "price:asc",
@@ -60,14 +60,6 @@ const ShopWithSidebar = () => {
   const products = data?.products;
   const pagination = data?.pagination;
   const totalPages = pagination?.totalPages || 1;
-  const totalProduct = pagination?.totalCount;
-
-  // Pagination handlers
-  const handlePageChange = (newPage: number) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setPage(newPage);
-    }
-  };
 
   // handle filterbox
   const handleFilter = (value: string) => {
@@ -77,6 +69,14 @@ const ShopWithSidebar = () => {
   // handle category filter, filter by category id
   const handleCategoryFilter = (id: string) => {
     setCategoryId(id === categoryId ? null : id);
+    setCheckedCategory(id === checkedCategory ? null : id);
+  };
+
+  // Pagination handlers
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
   };
 
   const sortOptions = [
@@ -163,97 +163,12 @@ const ShopWithSidebar = () => {
               {/* <!-- Products Grid LIST Content End --> */}
 
               {/* <!-- Products Pagination Start --> */}
-              <div className="flex justify-center mt-15">
-                <div className="bg-white shadow-1 rounded-md p-2">
-                  <ul className="flex items-center">
-                    <li>
-                      <button
-                        id="paginationLeft"
-                        aria-label="button for pagination left"
-                        type="button"
-                        disabled
-                        className="flex items-center justify-center w-8 h-9 ease-out duration-200 rounded-[3px disabled:text-gray-4"
-                      >
-                        <ChevronLeft size={16} />
-                      </button>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] bg-blue text-white hover:text-white hover:bg-blue"
-                      >
-                        1
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] hover:text-white hover:bg-blue"
-                      >
-                        2
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] hover:text-white hover:bg-blue"
-                      >
-                        3
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] hover:text-white hover:bg-blue"
-                      >
-                        4
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] hover:text-white hover:bg-blue"
-                      >
-                        5
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] hover:text-white hover:bg-blue"
-                      >
-                        ...
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        href="#"
-                        className="flex py-1.5 px-3.5 duration-200 rounded-[3px] hover:text-white hover:bg-blue"
-                      >
-                        10
-                      </a>
-                    </li>
-
-                    <li>
-                      <button
-                        id="paginationLeft"
-                        aria-label="button for pagination left"
-                        type="button"
-                        className="flex items-center justify-center w-8 h-9 ease-out duration-200 rounded-[3px] hover:text-white hover:bg-blue disabled:text-gray-4"
-                      >
-                        <ChevronRight size={16} />
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              <PaginationComponent
+                currentPage={currentPage}
+                pagination={pagination}
+                isLoading={isLoading}
+                onPageChange={handlePageChange}
+              />
               {/* <!-- Products Pagination End --> */}
             </div>
             {/* // <!-- Content End --> */}
