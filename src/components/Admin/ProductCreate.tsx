@@ -121,6 +121,8 @@ export default function CreateProduct() {
 
   return (
     <div className="max-w-2xl mx-auto p-6 rounded-lg shadow border border-muted/50">
+      <h1 className="text-2xl font-bold mb-6">Create New Product</h1>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
