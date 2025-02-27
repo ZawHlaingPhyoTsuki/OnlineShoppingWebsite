@@ -70,17 +70,13 @@ export default function CreateProduct() {
     },
   });
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await categoryApi.getAll();
-        setCategories(response.data);
-      } catch (error) {
-        toast.error("Failed to load categories");
-      }
-    };
-    fetchCategories();
-  }, []);
+  // fetch categories
+    useEffect(() => {
+      categoryApi
+        .getAll()
+        .then((response) => setCategories(response.data))
+        .catch(() => toast.error("Failed to load categories"));
+    }, []);
 
   const handleRemoveImage = async (index: number, publicId: string) => {
     try {
@@ -100,7 +96,7 @@ export default function CreateProduct() {
   const onSubmit = async (data: ProductFormValues) => {
     try {
       setIsLoading(true);
-      const productData: Omit<Product, "id" | "category"> = {
+      const productData: Omit<Product, "id" | "category" | "createdAt" | "updatedAt"> = {
         name: data.name,
         description: data.description,
         price: Number(data.price),

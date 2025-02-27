@@ -1,23 +1,25 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { Category } from "@/types/category";
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const name = searchParams.get("name");
-
   try {
+    // Fetch categories with their products
     const categories = await prisma.category.findMany({
-      where: {
-        ...(name && { name: { contains: name, mode: "insensitive" } }),
-      },
-      include: { products: true },
+      include: { products: true }, // Include products to count them
     });
-    return NextResponse.json(categories);
+
+    // Sort categories by the number of products in descending order
+    const sortedCategories = categories.sort((a, b) => {
+      const aProductCount = (a.products || []).length;
+      const bProductCount = (b.products || []).length;
+      return bProductCount - aProductCount; // Descending order
+    });
+
+    return NextResponse.json(sortedCategories);
   } catch (error) {
-    console.error(error);
+    console.error("GET /categories error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch categories" },
+      { error: "Failed to fetch categories", details: error.message },
       { status: 500 }
     );
   }
@@ -25,21 +27,31 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const body : Category = await request.json();
+    const body = await request.json();
     const { name, description, image } = body;
+
+    // Basic validation
+    if (!name || !image) {
+      return NextResponse.json(
+        { error: "Name and image are required" },
+        { status: 400 }
+      );
+    }
 
     const category = await prisma.category.create({
       data: {
         name,
         description,
-        image
+        image,
       },
     });
+    console.log("Category created:", category);
+
     return NextResponse.json(category, { status: 201 });
   } catch (error) {
-    console.error(error);
+    console.error("POST /categories error:", error);
     return NextResponse.json(
-      { error: "Failed to create category" },
+      { error: "Failed to create category", details: error.message },
       { status: 500 }
     );
   }

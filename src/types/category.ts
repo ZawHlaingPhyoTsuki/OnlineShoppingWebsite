@@ -6,4 +6,6 @@ export interface Category {
   description?: string | null;
   image: string;
   products?: Product[];
+  createdAt: string;
+  updatedAt: string;
 }

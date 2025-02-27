@@ -10,12 +10,26 @@ export async function GET(request: Request) {
   const name = searchParams.get("name");
   const page = parseInt(searchParams.get("page") || "1", 10);
   const limit = parseInt(searchParams.get("limit") || "10", 10);
+  const sortBy = searchParams.get("sortBy") || "latest";
 
   try {
-    // Calculate skip value for pagination
     const skip = (page - 1) * limit;
 
-    // Get total count for pagination metadata
+    let orderBy = {};
+    switch (sortBy) {
+      case "latest":
+        orderBy = { createdAt: "desc" };
+        break;
+      case "price:asc":
+        orderBy = { price: "asc" };
+        break;
+      case "price:desc":
+        orderBy = { price: "desc" };
+        break;
+      default:
+        orderBy = { createdAt: "desc" };
+    }
+
     const totalCount = await prisma.product.count({
       where: {
         ...(categoryId && { categoryId }),
@@ -25,7 +39,6 @@ export async function GET(request: Request) {
       },
     });
 
-    // Fetch paginated products
     const products = await prisma.product.findMany({
       where: {
         ...(categoryId && { categoryId }),
@@ -36,18 +49,13 @@ export async function GET(request: Request) {
       include: { category: true },
       skip,
       take: limit,
-      orderBy: {
-        // Optional: add sorting
-        id: "desc", // or any other field you want to sort by
-      },
+      orderBy,
     });
 
-    // Calculate pagination metadata
     const totalPages = Math.ceil(totalCount / limit);
     const hasNextPage = page < totalPages;
     const hasPrevPage = page > 1;
 
-    // Return response with pagination metadata
     return NextResponse.json({
       products,
       pagination: {
@@ -70,7 +78,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const body: Product = await request.json();
+    const body: Omit<Product, "createdAt" | "updatedAt"> = await request.json();
     const {
       name,
       description,
@@ -92,6 +100,7 @@ export async function POST(request: Request) {
         images,
         color,
         size,
+        // createdAt and updatedAt will be automatically set by Prisma
       },
     });
 

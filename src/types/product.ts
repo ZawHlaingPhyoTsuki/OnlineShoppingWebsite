@@ -11,4 +11,6 @@ export type Product = {
   images: string[];
   color: string[];
   size: string[];
+  createdAt: string;
+  updatedAt: string
 };

@@ -21,6 +21,7 @@ import PreLoader from "../Common/PreLoader";
 import Swal from "sweetalert2";
 import { Category } from "@/types/category";
 import { CldImage } from "next-cloudinary";
+import SkeletonProduct from "../Common/SkeletonProduct";
 
 const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
 
@@ -274,20 +275,9 @@ const CategoryView = () => {
     [sortBy]
   );
 
-  if (isLoading) return <PreLoader />;
   if (error) return <p>Error: {error.message || "An error occurred"}</p>;
 
   const sortedCategories = sortCategories(categories);
-
-  const fakeCategories = [
-    {
-      id: "1",
-      name: "a",
-      description: "aa",
-      image: "",
-      products: [],
-    }
-  ];
 
   return (
     <div className="container mx-auto p-4">
@@ -309,11 +299,15 @@ const CategoryView = () => {
         </Select>
         <ViewModeBtn viewMode={viewMode} setViewMode={setViewMode} />
       </div>
-      <CategoryList
-        categories={sortedCategories}
-        viewMode={viewMode}
-        mutate={mutate}
-      />
+      {isLoading ? (
+        <SkeletonProduct productStyle={viewMode} limit={10} />
+      ) : (
+        <CategoryList
+          categories={sortedCategories}
+          viewMode={viewMode}
+          mutate={mutate}
+        />
+      )}
     </div>
   );
 };

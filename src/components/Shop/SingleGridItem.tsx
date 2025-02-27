@@ -62,7 +62,7 @@ const SingleGridItem = ({ item }: { item: Product }) => {
           </button>
 
           <Link
-            href="/shop-details" // Corrected URL to shop-details
+            href={`/shop-details/${item.id}`}
             className="inline-flex font-medium text-custom-sm py-[7px] px-5 rounded-[5px] bg-blue text-white ease-out duration-200 hover:bg-blue-dark"
           >
             See Details
@@ -73,8 +73,7 @@ const SingleGridItem = ({ item }: { item: Product }) => {
       </div>
 
       <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5">
-        <Link href="/shop-details">{item.name}</Link>{" "}
-        {/* Use name instead of title */}
+        <Link href={`/shop-details/${item.id}`}>{item.name}</Link>{" "}
       </h3>
 
       <span className="flex items-center gap-2 font-medium text-lg">

@@ -70,11 +70,11 @@ export async function PUT(
 ) {
   try {
     const body = await request.json();
-    const { name, description, price } = body;
+    const { name, description, price, discountedPrice } = body;
 
     const product = await prisma.product.update({
       where: { id: params.id },
-      data: { name, description, price },
+      data: { name, description, price, discountedPrice },
     });
     return NextResponse.json(product);
   } catch (error) {

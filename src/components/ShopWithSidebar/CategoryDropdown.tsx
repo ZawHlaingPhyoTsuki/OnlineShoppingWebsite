@@ -1,8 +1,9 @@
 "use client";
 
+import { Category } from "@/types/category";
 import { useState } from "react";
 
-const CategoryItem = ({ category }) => {
+const CategoryItem = ({ category }: { category: Category }) => {
   const [selected, setSelected] = useState(false);
   return (
     <button
@@ -43,17 +44,17 @@ const CategoryItem = ({ category }) => {
           selected ? "text-white bg-blue" : "bg-gray-2"
         } inline-flex rounded-[30px] text-custom-xs px-2 ease-out duration-200 group-hover:text-white group-hover:bg-blue`}
       >
-        {category.products}
+        {category.products.length}
       </span>
     </button>
   );
 };
 
-const CategoryDropdown = ({ categories }) => {
+const CategoryDropdown = ({ categories }: { categories: Category[] }) => {
   const [toggleDropdown, setToggleDropdown] = useState(true);
 
   return (
-    <div className="bg-white shadow-1 rounded-lg">
+    <div className="bg-white shadow-1 rounded-lg overflow-x-hidden">
       <div
         onClick={(e) => {
           e.preventDefault();

@@ -102,6 +102,21 @@ const ProductCard = React.memo(
                 className="mb-2"
                 placeholder="Product price"
               />
+              <Input
+                type="number"
+                value={editData.discountedPrice ?? 0}
+                onChange={(e) =>
+                  setEditData({
+                    ...editData,
+                    discountedPrice:
+                      e.target.value === "" ? 0 : parseFloat(e.target.value),
+                  })
+                }
+                min="0"
+                step="0.01"
+                className="mb-2"
+                placeholder="Product discounted price"
+              />
             </>
           ) : (
             <>
@@ -113,9 +128,14 @@ const ProductCard = React.memo(
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className="text-lg font-bold text-primary">
-                    ${product.price}
-                  </span>
+                  <div className="flex gap-2 justify-end items-baseline">
+                    <span className="text-lg font-bold text-primary">
+                      ${product.discountedPrice}
+                    </span>
+                    <span className="text-md text-meta-4 line-through">
+                      ${product.price}
+                    </span>
+                  </div>
                   <p className="text-sm text-muted-foreground mt-1">
                     Category: {product.category?.name || "No Category"}
                   </p>
@@ -185,6 +205,7 @@ const ProductList = ({
       name: product.name,
       description: product.description,
       price: product.price,
+      discountedPrice: product.discountedPrice,
     });
   }, []);
 
