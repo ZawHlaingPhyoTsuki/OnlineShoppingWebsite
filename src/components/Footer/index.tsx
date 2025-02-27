@@ -6,7 +6,7 @@ const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="overflow-hidden">
+    <footer className="overflow-hidden border-t-gray-4 border">
       <div className="max-w-[1170px]  mx-auto px-4 sm:px-8 xl:px-0">
         {/* <!-- footer menu start --> */}
         <div className="flex mx-auto flex-wrap sm:flex-nowrap gap-20 justify-center sm:justify-between pt-17.5 xl:pt-22.5 pb-10 xl:pb-15">
@@ -205,6 +205,7 @@ const Footer = () => {
 
           {/* RIGHT SIDE */}
           <div className="flex justify-between flex-wrap gap-16">
+            {/* <!-- Account --> */}
             <div className="w-full sm:w-auto">
               <h2 className="mb-7.5 text-custom-1 font-medium text-dark">
                 Account
@@ -239,6 +240,7 @@ const Footer = () => {
               </ul>
             </div>
 
+            {/* <!-- Help & Support --> */}
             <div className="w-full sm:w-auto">
               <h2 className="mb-7.5 text-custom-1 font-medium text-dark">
                 Help & Support
@@ -246,19 +248,36 @@ const Footer = () => {
 
               <ul className="flex flex-col gap-3">
                 <li>
-                  <a className="ease-out duration-200 hover:text-blue" href="#">
+                  <Link
+                    href="/privacy-policy"
+                    className="ease-out duration-200 hover:text-blue"
+                  >
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a className="ease-out duration-200 hover:text-blue" href="#">
+                  <Link
+                    href="/refund"
+                    className="ease-out duration-200 hover:text-blue"
+                  >
                     Refund Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a className="ease-out duration-200 hover:text-blue" href="#">
-                    Terms of Use
-                  </a>
+                  <Link
+                    href="/terms"
+                    className="ease-out duration-200 hover:text-blue"
+                  >
+                    Terms
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/support"
+                    className="ease-out duration-200 hover:text-blue"
+                  >
+                    Support
+                  </Link>
                 </li>
               </ul>
             </div>
