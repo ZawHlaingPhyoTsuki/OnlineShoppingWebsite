@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import { Category } from "@/types/category";
 import useSWR from "swr";
 import {
+  ArrowDown,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Grid,
@@ -27,6 +29,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "../ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Label } from "../ui/label";
+import { Checkbox } from "../ui/checkbox";
 
 const fetcher = ([_, params]) =>
   productApi.getAll(params).then((res) => res.data);
@@ -102,8 +111,11 @@ const ShopWithSidebar = () => {
             >
               <div className="hidden lg:flex flex-col gap-6">
                 {/* <!-- filter box --> */}
-                <div className="bg-white shadow-1 rounded-lg py-4 px-5">
-                  <p className="flex items-center justify-between">Filters:</p>
+                <div className="bg-white shadow-1 rounded-lg py-4 px-4 flex justify-between items-center">
+                  <span className="tracking-[.07em]">Filters:</span>
+                  <span className="text-blue font-thin text-sm cursor-pointer hover:text-blue-light active:text-blue-dark">
+                    Clear All
+                  </span>
                 </div>
 
                 {/* <!-- category box for desktop --> */}
@@ -119,7 +131,7 @@ const ShopWithSidebar = () => {
                   {/* <!-- top bar left --> */}
                   <div className="flex flex-wrap items-center gap-4">
                     {/* <!-- category box for mobile */}
-                    <SheetSidebar />
+                    <SheetSidebar categories={categories} />
                     <FilterBox
                       value={sortBy}
                       onValueChange={handleFilter}
@@ -272,10 +284,32 @@ export default ShopWithSidebar;
 
 const CategoryBox = ({ categories }: { categories: Category[] }) => {
   return (
-    <div className="bg-white shadow-1 rounded-lg py-4 px-5">
-      {categories.map((item, key) => (
-        <div key={key}>{item.name}</div>
-      ))}
+    <div className="flex items-center gap-2 w-full">
+      <div className="w-full flex flex-col gap-3">
+        <div className="w-full flex justify-between items-center py-2 px-2 bg-white rounded-lg">
+          <Label className="pl-2 text-base">Category</Label>
+        </div>
+        <div>
+          <div className="flex flex-col gap-4 bg-white rounded-lg p-4">
+            {categories.map((item) => (
+              <div className="w-full flex justify-between items-center cursor-pointer">
+                <div className="flex gap-2 items-center">
+                  <Checkbox id={item.name} />
+                  <Label
+                    htmlFor={item.name}
+                    className="cursor-pointer text-start"
+                  >
+                    {item.name}
+                  </Label>
+                </div>
+                <span className="rounded-full bg-meta w-5 h-5 text-center">
+                  {item.products.length}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -317,7 +351,7 @@ const ProductSection = ({
   );
 };
 
-const SheetSidebar = () => {
+const SheetSidebar = ({ categories }: { categories: Category[] }) => {
   return (
     <div className="xl:hidden">
       <Sheet>
@@ -328,12 +362,45 @@ const SheetSidebar = () => {
             <PanelRightClose size={20} />
           </button>
         </SheetTrigger>
-        <SheetContent side="left" className="z-99999">
-          <SheetHeader>
-            <SheetTitle>Are you absolutely sure?</SheetTitle>
+        <SheetContent side="left" className="z-99999 xl:hidden bg-meta">
+          <SheetHeader className="my-4">
+            <SheetTitle className="flex justify-between items-center mx-2">
+              <span className="tracking-[.07em]">Filters:</span>
+              <span className="text-blue font-thin text-sm cursor-pointer hover:text-blue-light active:text-blue-dark">
+                Clear All
+              </span>
+            </SheetTitle>
             <SheetDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
+              <div className="flex flex-col gap-6 w-full">
+                <div className="flex items-center gap-2 w-full">
+                  <Collapsible className="w-full flex flex-col gap-3">
+                    <CollapsibleTrigger className="w-full flex justify-between items-center py-2 px-2 bg-white rounded-lg">
+                      <Label className="pl-2 text-base">Category</Label>
+                      <ChevronDown size={20} />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="flex flex-col gap-4 bg-white rounded-lg p-4">
+                        {categories.map((item) => (
+                          <div className="w-full flex justify-between items-center cursor-pointer">
+                            <div className="flex gap-2 items-center">
+                              <Checkbox id={item.name} />
+                              <Label
+                                htmlFor={item.name}
+                                className="cursor-pointer text-start"
+                              >
+                                {item.name}
+                              </Label>
+                            </div>
+                            <span className="rounded-full bg-meta w-5 h-5 text-center">
+                              {item.products.length}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
+              </div>
             </SheetDescription>
           </SheetHeader>
         </SheetContent>
