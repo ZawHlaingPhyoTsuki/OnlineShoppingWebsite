@@ -3,7 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import ProductItem from "@/components/Common/ProductItem";
-import shopData from "@/components/Shop/shopData";
 import { productApi } from "@/lib/api";
 import useSWR from "swr";
 

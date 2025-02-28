@@ -25,6 +25,7 @@ import SkeletonProduct from "../Common/SkeletonProduct";
 
 const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
 
+
 // Memoized CategoryCard to prevent unnecessary re-renders
 const CategoryCard = React.memo(
   ({
@@ -163,6 +164,7 @@ const CategoryCard = React.memo(
     );
   }
 );
+CategoryCard.displayName = "CategoryCard"; // Add this line
 
 type CategoryListProps = {
   categories: Category[];

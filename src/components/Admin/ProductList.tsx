@@ -189,6 +189,7 @@ const ProductCard = React.memo(
     );
   }
 );
+ProductCard.displayName = "ProductCard"; // Add this line
 
 const ProductList = ({
   products,
