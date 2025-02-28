@@ -1,7 +1,6 @@
 "use client";
 
 import { Category } from "@/types/category";
-import { useState } from "react";
 import { Label } from "../ui/label";
 import CategoryRowItem from "./CategoryRowItem";
 
@@ -9,7 +8,7 @@ type CategoryBoxProps = {
   categories: Category[];
   handleCategoryFilter: (categoryName: string) => void;
   checkedCategory: string | null;
-  setCheckedCategory: React.Dispatch<React.SetStateAction<string | null>>;
+  setCheckedCategory: (id: string | null) => void;
 };
 
 // For Desktop
@@ -17,10 +16,12 @@ const CategoryBox = ({
   categories,
   handleCategoryFilter,
   checkedCategory,
-  setCheckedCategory
+  setCheckedCategory,
 }: CategoryBoxProps) => {
   const handleRowClicked = (categoryId: string) => {
-    setCheckedCategory((prev) => (prev === categoryId ? null : categoryId));
+    const nextCheckedCategory =
+      checkedCategory === categoryId ? null : categoryId;
+    setCheckedCategory(nextCheckedCategory);
     handleCategoryFilter(categoryId);
   };
 

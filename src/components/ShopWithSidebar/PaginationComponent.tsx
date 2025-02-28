@@ -1,4 +1,3 @@
-// components/Pagination.tsx
 "use client";
 
 import {
@@ -9,7 +8,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button"; // Import Button
+import { Button } from "@/components/ui/button";
 import { pagination } from "@/types/pagination";
 
 interface PaginationProps {
@@ -25,7 +24,7 @@ const PaginationComponent = ({
   isLoading,
   onPageChange,
 }: PaginationProps) => {
-  if (!pagination || isLoading) {
+  if (!pagination || isLoading || pagination.totalPages <= 1) {
     return null; // Don’t render pagination if no data, only one page, or loading
   }
 

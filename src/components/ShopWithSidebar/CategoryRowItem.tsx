@@ -11,15 +11,7 @@ const CategoryRowItem = ({
   checkedCategory: string | null;
 }) => {
   return (
-    <div
-      key={item.id}
-      className="w-full flex justify-between items-center cursor-pointer"
-      onClick={(e) => {
-        if (!(e.target as Element).closest('input[type="checkbox"]')) {
-          handleRowClicked(item.id);
-        }
-      }}
-    >
+    <div className="w-full flex justify-between items-center cursor-pointer">
       <div className="flex gap-2 items-center">
         <input
           type="checkbox"

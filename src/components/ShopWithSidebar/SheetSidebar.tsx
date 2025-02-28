@@ -14,15 +14,14 @@ import {
 } from "@/components/ui/collapsible";
 import { Category } from "@/types/category";
 import { Label } from "../ui/label";
-import { useState } from "react";
 import { ChevronDown, PanelRightClose } from "lucide-react";
 import CategoryRowItem from "./CategoryRowItem";
 
-type CategoryBoxProps = {
+type SheetSidebar = {
   categories: Category[];
   handleCategoryFilter: (categoryId: string) => void;
   checkedCategory: string | null;
-  setCheckedCategory: React.Dispatch<React.SetStateAction<string | null>>;
+  setCheckedCategory: (id: string | null) => void;
 };
 
 // For Mobile
@@ -31,9 +30,11 @@ const SheetSidebar = ({
   handleCategoryFilter,
   checkedCategory,
   setCheckedCategory,
-}: CategoryBoxProps) => {
+}: SheetSidebar) => {
   const handleRowClicked = (categoryId: string) => {
-    setCheckedCategory((prev) => (prev === categoryId ? null : categoryId));
+    const nextCheckedCategory =
+      checkedCategory === categoryId ? null : categoryId;
+    setCheckedCategory(nextCheckedCategory);
     handleCategoryFilter(categoryId);
   };
 
