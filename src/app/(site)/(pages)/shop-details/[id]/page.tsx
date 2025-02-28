@@ -15,10 +15,6 @@ const ShopDetailsPage = async ({ params }: { params: { id: string } }) => {
   try {
     // Fetch the product by ID using productApi
     const product = await productApi.getById(id);
-
-    // Log to the server terminal for debugging (optional)
-    console.log("Fetched product:", product);
-
     return (
       <main>
         <ShopDetails product={product.data} />
